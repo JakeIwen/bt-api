@@ -34,7 +34,8 @@ function sendEmail(_ref) {
       type = _ref.type,
       projectTitle = _ref.projectTitle,
       sessionId = _ref.sessionId,
-      forHandle = _ref.forHandle;
+      forHandle = _ref.forHandle,
+      urlCode = _ref.urlCode;
 
 
   var html = '';
@@ -66,7 +67,7 @@ function sendEmail(_ref) {
       }
     case 'INVITATION_RECEIVED':
       {
-        html = (0, _invitationReceived2.default)(byHandle);
+        html = (0, _invitationReceived2.default)(byHandle, urlCode);
         subject = 'BounceTribe Invitation Received';
         break;
       }

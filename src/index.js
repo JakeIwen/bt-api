@@ -85,10 +85,11 @@ app.use('/artists', (req, res, next) => {
 })
 
 app.use('/email', (req, res, next) => {
-  let {toEmail, byHandle, byId} = req.body.query
+  let {toEmail, byHandle} = req.body.query
   let type = 'INVITATION_RECEIVED'
-  console.log('QUReY', toEmail);
-  sendEmail({toEmail, byHandle, byId, type})
+  urlCode = ''
+  console.log('email Invitiation to:', toEmail)
+  sendEmail({toEmail, byHandle, type, urlCode})
   res.send({success: true})
 })
 
@@ -106,6 +107,7 @@ app.use('/notifications/:type', (req, res, next) => {
   let emailNotification = true
   let sendNotification = true
   let extra = ''
+  let urlCode = ''
 
   switch (type) {
     case 'FRIENDS': {
@@ -136,12 +138,7 @@ app.use('/notifications/:type', (req, res, next) => {
       toEmail = node.project.creator.email
       forHandle = node.project.creator.handle
       byHandle = node.author.handle
-      console.log('COMMENTS:\n\n', node);
-      //-1 currently the flag for a bounce
-      if (node.timestamp == -1) {
-        extra = `projectId: "${node.project.id}"`
-        type = 'BOUNCED'
-      } else if (node.session) {
+      if (node.session) {
         extra = `sessionId: "${node.session.id}"`
         type = 'SESSION_FEEDBACK_RECEIVED'
         sessionId = node.session.id
@@ -176,6 +173,7 @@ app.use('/notifications/:type', (req, res, next) => {
       console.log('BOUNCED!', node);
       extra = `BOUNCED projectId: "${node.project.id}"`
       type = 'BOUNCED'
+      urlCode = ''
       break
     }
     default: {
@@ -199,7 +197,8 @@ app.use('/notifications/:type', (req, res, next) => {
       type,
       projectTitle,
       sessionId,
-      forHandle
+      forHandle,
+      urlCode
     })
   }
 

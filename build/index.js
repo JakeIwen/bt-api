@@ -97,12 +97,12 @@ app.use('/artists', function (req, res, next) {
 app.use('/email', function (req, res, next) {
   var _req$body$query = req.body.query,
       toEmail = _req$body$query.toEmail,
-      byHandle = _req$body$query.byHandle,
-      byId = _req$body$query.byId;
+      byHandle = _req$body$query.byHandle;
 
   var type = 'INVITATION_RECEIVED';
-  console.log('QUReY', toEmail);
-  (0, _emails2.default)({ toEmail: toEmail, byHandle: byHandle, byId: byId, type: type });
+  urlCode = '';
+  console.log('email Invitiation to:', toEmail);
+  (0, _emails2.default)({ toEmail: toEmail, byHandle: byHandle, type: type, urlCode: urlCode });
   res.send({ success: true });
 });
 
@@ -120,6 +120,7 @@ app.use('/notifications/:type', function (req, res, next) {
   var emailNotification = true;
   var sendNotification = true;
   var extra = '';
+  var urlCode = '';
 
   switch (type) {
     case 'FRIENDS':
@@ -154,12 +155,7 @@ app.use('/notifications/:type', function (req, res, next) {
         toEmail = _node2.project.creator.email;
         forHandle = _node2.project.creator.handle;
         byHandle = _node2.author.handle;
-        console.log('COMMENTS:\n\n', _node2);
-        //-1 currently the flag for a bounce
-        if (_node2.timestamp == -1) {
-          extra = 'projectId: "' + _node2.project.id + '"';
-          type = 'BOUNCED';
-        } else if (_node2.session) {
+        if (_node2.session) {
           extra = 'sessionId: "' + _node2.session.id + '"';
           type = 'SESSION_FEEDBACK_RECEIVED';
           sessionId = _node2.session.id;
@@ -195,6 +191,7 @@ app.use('/notifications/:type', function (req, res, next) {
         console.log('BOUNCED!', node);
         extra = 'BOUNCED projectId: "' + node.project.id + '"';
         type = 'BOUNCED';
+        urlCode = '';
         break;
       }
     default:
@@ -217,7 +214,8 @@ app.use('/notifications/:type', function (req, res, next) {
       type: type,
       projectTitle: projectTitle,
       sessionId: sessionId,
-      forHandle: forHandle
+      forHandle: forHandle,
+      urlCode: urlCode
     });
   }
 
