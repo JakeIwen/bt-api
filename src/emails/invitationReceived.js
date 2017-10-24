@@ -168,11 +168,12 @@ export default function invitationReceived(byHandle, urlCode){
                             <tbody>
                               <tr>
                                 <td style="border:none;border-radius:3px;color:white;cursor:auto;padding:16px 30px;" align="center" valign="middle" bgcolor="#9075F3">
-                                  <a href="https://www.bouncetribe.com${urlCode || ''}">
+
                                     <p style="text-decoration:none;background:#9075F3;color:white;font-family:Helvetica, Arial;font-size:15px;font-weight:bold;line-height:120%;text-transform:none;margin:0px;">
-                                      Accept Invitation
+                                      <a href="https://www.bouncetribe.com${urlCode || ''}">
+                                        Accept Invitation
+                                      </a>
                                     </p>
-                                  </a>
                                 </td>
                               </tr>
                             </tbody>
