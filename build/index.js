@@ -101,7 +101,7 @@ app.use('/email', function (req, res, next) {
       byId = _req$body$query.byId;
 
   var type = 'INVITATION_RECEIVED';
-  console.log('QUReY', query, toEmail);
+  console.log('QUReY', toEmail);
   (0, _emails2.default)({ toEmail: toEmail, byHandle: byHandle, byId: byId, type: type });
   res.send({ success: true });
 });

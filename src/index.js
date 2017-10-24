@@ -87,7 +87,7 @@ app.use('/artists', (req, res, next) => {
 app.use('/email', (req, res, next) => {
   let {toEmail, byHandle, byId} = req.body.query
   let type = 'INVITATION_RECEIVED'
-  console.log('QUReY', query, toEmail);
+  console.log('QUReY', toEmail);
   sendEmail({toEmail, byHandle, byId, type})
   res.send({success: true})
 })
