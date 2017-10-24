@@ -100,7 +100,7 @@ app.use('/email', function (req, res, next) {
       byHandle = _req$body$query.byHandle;
 
   var type = 'INVITATION_RECEIVED';
-  urlCode = '';
+  var urlCode = '';
   console.log('email Invitiation to:', toEmail);
   (0, _emails2.default)({ toEmail: toEmail, byHandle: byHandle, type: type, urlCode: urlCode });
   res.send({ success: true });
