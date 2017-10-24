@@ -1,0 +1,45 @@
+{
+  "name": "bt-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-core": "^6.24.1",
+    "babel-jest": "^19.0.0",
+    "babel-preset-latest": "^6.22.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "jest": "^19.0.2",
+    "nodemon": "^1.11.0"
+  },
+  "scripts": {
+    "build": "yarn run clean && babel src --out-dir build --copy-files",
+    "start": "environment=local nodemon src --exec babel-node src",
+    "clean": "rm -r build",
+    "test": "jest",
+    "deploy": "yarn run build && git add . && git commit -m 'auto' && git push origin master"
+  },
+  "babel": {
+    "presets": [
+      "latest",
+      "stage-3"
+    ]
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-runtime": "^6.23.0",
+    "body-parser": "^1.17.1",
+    "cors": "^2.8.3",
+    "csvtojson": "^1.1.4",
+    "express": "^4.14.1",
+    "express-graphql": "^0.6.4",
+    "faker": "^4.1.0",
+    "graphql": "^0.9.5",
+    "jsonwebtoken": "^7.4.0",
+    "mailgun-js": "^0.10.1",
+    "node-fetch": "^1.7.1",
+    "spotify-web-api-node": "^2.4.0",
+    "uuid": "^3.0.1"
+  }
+}
