@@ -128,7 +128,12 @@ app.use('/notifications/:type', (req, res, next) => {
       toEmail = node.project.creator.email
       forHandle = node.project.creator.handle
       byHandle = node.author.handle
-      if (node.session) {
+      console.log('COMMENTS:\n\n', node);
+      //-1 currently the flag for a bounce
+      if(node.timestamp < 0) {
+        extra = `projectId: "${node.project.id}"`
+        type = 'BOUNCED'
+      } else if (node.session) {
         extra = `sessionId: "${node.session.id}"`
         type = 'SESSION_FEEDBACK_RECEIVED'
         sessionId = node.session.id
@@ -156,10 +161,6 @@ app.use('/notifications/:type', (req, res, next) => {
 
     }
     case 'MESSAGE': {
-      break
-
-    }
-    case 'BOUNCED': {
       break
 
     }

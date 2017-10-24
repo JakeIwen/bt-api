@@ -142,7 +142,12 @@ app.use('/notifications/:type', function (req, res, next) {
         toEmail = _node.project.creator.email;
         forHandle = _node.project.creator.handle;
         byHandle = _node.author.handle;
-        if (_node.session) {
+        console.log('COMMENTS:\n\n', _node);
+        //-1 currently the flag for a bounce
+        if (_node.timestamp < 0) {
+          extra = 'projectId: "' + _node.project.id + '"';
+          type = 'BOUNCED';
+        } else if (_node.session) {
           extra = 'sessionId: "' + _node.session.id + '"';
           type = 'SESSION_FEEDBACK_RECEIVED';
           sessionId = _node.session.id;
@@ -170,10 +175,6 @@ app.use('/notifications/:type', function (req, res, next) {
         break;
       }
     case 'MESSAGE':
-      {
-        break;
-      }
-    case 'BOUNCED':
       {
         break;
       }
