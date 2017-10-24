@@ -94,6 +94,18 @@ app.use('/artists', function (req, res, next) {
   }
 });
 
+app.use('/email', function (req, res, next) {
+  var _req$body$query = req.body.query,
+      toEmail = _req$body$query.toEmail,
+      byHandle = _req$body$query.byHandle,
+      byId = _req$body$query.byId;
+
+  var type = 'INVITATION_RECEIVED';
+  console.log('QUReY', query, toEmail);
+  (0, _emails2.default)({ toEmail: toEmail, byHandle: byHandle, byId: byId, type: type });
+  res.send({ success: true });
+});
+
 app.use('/notifications/:type', function (req, res, next) {
   var data = req.body.data;
   var type = req.params.type;
@@ -112,22 +124,22 @@ app.use('/notifications/:type', function (req, res, next) {
   switch (type) {
     case 'FRIENDS':
       {
-        var node = data.FriendRequest.node;
+        var _node = data.FriendRequest.node;
 
-        if (node.accepted) {
+        if (_node.accepted) {
           type = "FRIEND_REQUEST_ACCEPTED";
-          byId = node.recipient.id;
-          forId = node.actor.id;
-          if (node.actor.doNotEmail) {
+          byId = _node.recipient.id;
+          forId = _node.actor.id;
+          if (_node.actor.doNotEmail) {
             emailNotification = false;
           }
         } else {
           type = "FRIEND_REQUEST";
-          byId = node.actor.id;
-          forId = node.recipient.id;
-          byHandle = node.recipient.handle;
-          toEmail = node.recipient.email;
-          if (node.recipient.doNotEmail) {
+          byId = _node.actor.id;
+          forId = _node.recipient.id;
+          byHandle = _node.recipient.handle;
+          toEmail = _node.recipient.email;
+          if (_node.recipient.doNotEmail) {
             emailNotification = false;
           }
         }
@@ -135,32 +147,32 @@ app.use('/notifications/:type', function (req, res, next) {
       }
     case 'COMMENT':
       {
-        var _node = data.Comment.node;
+        var _node2 = data.Comment.node;
 
-        byId = _node.author.id;
-        forId = _node.project.creator.id;
-        toEmail = _node.project.creator.email;
-        forHandle = _node.project.creator.handle;
-        byHandle = _node.author.handle;
-        console.log('COMMENTS:\n\n', _node);
+        byId = _node2.author.id;
+        forId = _node2.project.creator.id;
+        toEmail = _node2.project.creator.email;
+        forHandle = _node2.project.creator.handle;
+        byHandle = _node2.author.handle;
+        console.log('COMMENTS:\n\n', _node2);
         //-1 currently the flag for a bounce
-        if (_node.timestamp < 0) {
-          extra = 'projectId: "' + _node.project.id + '"';
+        if (_node2.timestamp == -1) {
+          extra = 'projectId: "' + _node2.project.id + '"';
           type = 'BOUNCED';
-        } else if (_node.session) {
-          extra = 'sessionId: "' + _node.session.id + '"';
+        } else if (_node2.session) {
+          extra = 'sessionId: "' + _node2.session.id + '"';
           type = 'SESSION_FEEDBACK_RECEIVED';
-          sessionId = _node.session.id;
-        } else if (_node.project) {
-          extra = 'projectId: "' + _node.project.id + '"';
+          sessionId = _node2.session.id;
+        } else if (_node2.project) {
+          extra = 'projectId: "' + _node2.project.id + '"';
           type = 'PROJECT_FEEDBACK_RECEIVED';
-          projectTitle = _node.project.title;
+          projectTitle = _node2.project.title;
         }
-        var existingComment = _node.project.comments.filter(function (comment) {
+        var existingComment = _node2.project.comments.filter(function (comment) {
           return comment.author.id === byId;
         });
 
-        if (_node.project.creator.doNotEmail) {
+        if (_node2.project.creator.doNotEmail) {
           emailNotification = false;
         }
 
@@ -176,6 +188,13 @@ app.use('/notifications/:type', function (req, res, next) {
       }
     case 'MESSAGE':
       {
+        break;
+      }
+    case 'BOUNCED':
+      {
+        console.log('BOUNCED!', node);
+        extra = 'BOUNCED projectId: "' + node.project.id + '"';
+        type = 'BOUNCED';
         break;
       }
     default:
