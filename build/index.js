@@ -103,7 +103,7 @@ app.use('/email', function (req, res, next) {
   var urlCode = '';
   console.log('email Invitiation to:', toEmail);
   (0, _emails2.default)({ toEmail: toEmail, byHandle: byHandle, type: type, urlCode: urlCode });
-  res.send({ success: true });
+  res.send();
 });
 
 app.use('/notifications/:type', function (req, res, next) {

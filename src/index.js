@@ -90,7 +90,7 @@ app.use('/email', (req, res, next) => {
   let urlCode = ''
   console.log('email Invitiation to:', toEmail)
   sendEmail({toEmail, byHandle, type, urlCode})
-  res.send({success: true})
+  res.send()
 })
 
 
