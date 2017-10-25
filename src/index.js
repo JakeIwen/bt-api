@@ -101,7 +101,7 @@ app.use('/notifications/:type', (req, res, next) => {
       projectTitle,
       forHandle
   let emailNotification = false
-  let sendNotification = false
+  let sendNotification = true
   let extra = ''
   let urlCode = ''
 
@@ -151,9 +151,8 @@ app.use('/notifications/:type', (req, res, next) => {
         emailNotification = true
       }
 
-      if (!existingComment.length > 1) {
-        emailNotification = true
-        sendNotification = true
+      if (existingComment.length > 1) {
+        sendNotification = false
       }
       break
     }

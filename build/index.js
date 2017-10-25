@@ -118,7 +118,7 @@ app.use('/notifications/:type', function (req, res, next) {
       projectTitle = void 0,
       forHandle = void 0;
   var emailNotification = false;
-  var sendNotification = false;
+  var sendNotification = true;
   var extra = '';
   var urlCode = '';
 
@@ -172,9 +172,8 @@ app.use('/notifications/:type', function (req, res, next) {
           emailNotification = true;
         }
 
-        if (!existingComment.length > 1) {
-          emailNotification = true;
-          sendNotification = true;
+        if (existingComment.length > 1) {
+          sendNotification = false;
         }
         break;
       }
