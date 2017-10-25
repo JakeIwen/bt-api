@@ -16,7 +16,6 @@ app.use(cors())
 
 app.use(bodyParser.json())
 
-
 const spotify = new Spotify({
   clientId : '6b96fc2eae0c494fb5b02514b70c436f',
   clientSecret : process.env.spotifySecret,
@@ -38,7 +37,6 @@ function refreshCredentials() {
     )
   })
 }
-
 
 function searchArtists(query) {
   return new Promise( (resolve, reject) => {
@@ -63,7 +61,6 @@ function searchArtists(query) {
     )
   })
 }
-
 
 app.use('/artists', (req, res, next) => {
   let {query} = req.body
@@ -93,7 +90,6 @@ app.use('/email', (req, res, next) => {
   res.send()
 })
 
-
 app.use('/notifications/:type', (req, res, next) => {
   let {data} = req.body
   let {type} = req.params
@@ -104,8 +100,8 @@ app.use('/notifications/:type', (req, res, next) => {
       sessionId,
       projectTitle,
       forHandle
-  let emailNotification = true
-  let sendNotification = true
+  let emailNotification = false
+  let sendNotification = false
   let extra = ''
   let urlCode = ''
 
@@ -116,8 +112,8 @@ app.use('/notifications/:type', (req, res, next) => {
         type = "FRIEND_REQUEST_ACCEPTED"
         byId = node.recipient.id
         forId = node.actor.id
-        if (node.actor.doNotEmail) {
-          emailNotification = false
+        if (!node.actor.doNotEmail) {
+          emailNotification = true
         }
       } else {
         type = "FRIEND_REQUEST"
@@ -125,8 +121,8 @@ app.use('/notifications/:type', (req, res, next) => {
         forId = node.recipient.id
         byHandle = node.recipient.handle
         toEmail = node.recipient.email
-        if (node.recipient.doNotEmail) {
-          emailNotification = false
+        if (!node.recipient.doNotEmail) {
+          emailNotification = true
         }
       }
       break
@@ -151,13 +147,13 @@ app.use('/notifications/:type', (req, res, next) => {
         return comment.author.id === byId
       })
 
-      if (node.project.creator.doNotEmail) {
-        emailNotification = false
+      if (!node.project.creator.doNotEmail) {
+        emailNotification = true
       }
 
-      if (existingComment.length > 1) {
-        emailNotification = false
-        sendNotification = false
+      if (!existingComment.length > 1) {
+        emailNotification = true
+        sendNotification = true
       }
       break
     }
@@ -170,10 +166,24 @@ app.use('/notifications/:type', (req, res, next) => {
 
     }
     case 'BOUNCED': {
-      console.log('BOUNCED!', node);
-      extra = `BOUNCED projectId: "${node.project.id}"`
+      let {node} = data.Bounce
+      console.log('BOUNCED!', node)
+      byId = node.bouncer.id
+      forId = node.project.creator.id
+      toEmail = node.project.creator.email
+      forHandle = node.project.creator.handle
+      byHandle = node.author.handle
+      extra = `projectId: "${node.project.id}"`
       type = 'BOUNCED'
       urlCode = ''
+      if (!node.project.creator.doNotEmail) {
+        emailNotification = true
+      }
+      // if bounce deleted?
+      // if (existingComment.length > 1) {
+      //   emailNotification = false
+      //   sendNotification = false
+      // }
       break
     }
     default: {

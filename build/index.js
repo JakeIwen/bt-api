@@ -117,64 +117,64 @@ app.use('/notifications/:type', function (req, res, next) {
       sessionId = void 0,
       projectTitle = void 0,
       forHandle = void 0;
-  var emailNotification = true;
-  var sendNotification = true;
+  var emailNotification = false;
+  var sendNotification = false;
   var extra = '';
   var urlCode = '';
 
   switch (type) {
     case 'FRIENDS':
       {
-        var _node = data.FriendRequest.node;
+        var node = data.FriendRequest.node;
 
-        if (_node.accepted) {
+        if (node.accepted) {
           type = "FRIEND_REQUEST_ACCEPTED";
-          byId = _node.recipient.id;
-          forId = _node.actor.id;
-          if (_node.actor.doNotEmail) {
-            emailNotification = false;
+          byId = node.recipient.id;
+          forId = node.actor.id;
+          if (!node.actor.doNotEmail) {
+            emailNotification = true;
           }
         } else {
           type = "FRIEND_REQUEST";
-          byId = _node.actor.id;
-          forId = _node.recipient.id;
-          byHandle = _node.recipient.handle;
-          toEmail = _node.recipient.email;
-          if (_node.recipient.doNotEmail) {
-            emailNotification = false;
+          byId = node.actor.id;
+          forId = node.recipient.id;
+          byHandle = node.recipient.handle;
+          toEmail = node.recipient.email;
+          if (!node.recipient.doNotEmail) {
+            emailNotification = true;
           }
         }
         break;
       }
     case 'COMMENT':
       {
-        var _node2 = data.Comment.node;
+        var _node = data.Comment.node;
 
-        byId = _node2.author.id;
-        forId = _node2.project.creator.id;
-        toEmail = _node2.project.creator.email;
-        forHandle = _node2.project.creator.handle;
-        byHandle = _node2.author.handle;
-        if (_node2.session) {
-          extra = 'sessionId: "' + _node2.session.id + '"';
+        byId = _node.author.id;
+        forId = _node.project.creator.id;
+        toEmail = _node.project.creator.email;
+        forHandle = _node.project.creator.handle;
+        byHandle = _node.author.handle;
+        if (_node.session) {
+          extra = 'sessionId: "' + _node.session.id + '"';
           type = 'SESSION_FEEDBACK_RECEIVED';
-          sessionId = _node2.session.id;
-        } else if (_node2.project) {
-          extra = 'projectId: "' + _node2.project.id + '"';
+          sessionId = _node.session.id;
+        } else if (_node.project) {
+          extra = 'projectId: "' + _node.project.id + '"';
           type = 'PROJECT_FEEDBACK_RECEIVED';
-          projectTitle = _node2.project.title;
+          projectTitle = _node.project.title;
         }
-        var existingComment = _node2.project.comments.filter(function (comment) {
+        var existingComment = _node.project.comments.filter(function (comment) {
           return comment.author.id === byId;
         });
 
-        if (_node2.project.creator.doNotEmail) {
-          emailNotification = false;
+        if (!_node.project.creator.doNotEmail) {
+          emailNotification = true;
         }
 
-        if (existingComment.length > 1) {
-          emailNotification = false;
-          sendNotification = false;
+        if (!existingComment.length > 1) {
+          emailNotification = true;
+          sendNotification = true;
         }
         break;
       }
@@ -188,10 +188,25 @@ app.use('/notifications/:type', function (req, res, next) {
       }
     case 'BOUNCED':
       {
-        console.log('BOUNCED!', node);
-        extra = 'BOUNCED projectId: "' + node.project.id + '"';
+        var _node2 = data.Bounce.node;
+
+        console.log('BOUNCED!', _node2);
+        byId = _node2.bouncer.id;
+        forId = _node2.project.creator.id;
+        toEmail = _node2.project.creator.email;
+        forHandle = _node2.project.creator.handle;
+        byHandle = _node2.author.handle;
+        extra = 'projectId: "' + _node2.project.id + '"';
         type = 'BOUNCED';
         urlCode = '';
+        if (!_node2.project.creator.doNotEmail) {
+          emailNotification = true;
+        }
+        // if bounce deleted?
+        // if (existingComment.length > 1) {
+        //   emailNotification = false
+        //   sendNotification = false
+        // }
         break;
       }
     default:

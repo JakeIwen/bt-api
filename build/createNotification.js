@@ -26,9 +26,7 @@ exports.default = function () {
             simple = 'https://api.graph.cool/simple/v1/bt-api';
             return _context.abrupt('return', (0, _nodeFetch2.default)(simple, {
               method: 'POST',
-              headers: {
-                'content-type': 'application/json'
-              },
+              headers: { 'content-type': 'application/json' },
               body: JSON.stringify({
                 query: '\n        mutation {\n          createNotification (\n            type: ' + type + '\n            notificationForId: "' + forId + '"\n            triggeredById: "' + byId + '"\n            ' + (extra ? extra : '') + '\n          ) {\n            id\n          }\n        }\n      '
               })
