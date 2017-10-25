@@ -23,6 +23,7 @@ exports.default = function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
+            console.log('create notification type, forId, byId, extra', type, forId, byId, extra);
             simple = 'https://api.graph.cool/simple/v1/bt-api';
             return _context.abrupt('return', (0, _nodeFetch2.default)(simple, {
               method: 'POST',
@@ -36,7 +37,7 @@ exports.default = function () {
               console.log("json", json);
             }));
 
-          case 2:
+          case 3:
           case 'end':
             return _context.stop();
         }

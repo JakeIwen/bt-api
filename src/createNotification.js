@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 
 export default async function createNotification({type, forId, byId, extra}) {
-
+  console.log('create notification type, forId, byId, extra', type, forId, byId, extra);
   const simple = 'https://api.graph.cool/simple/v1/bt-api'
   return fetch(simple, {
     method: 'POST',
