@@ -195,7 +195,7 @@ app.use('/notifications/:type', function (req, res, next) {
         forId = _node2.project.creator.id;
         toEmail = _node2.project.creator.email;
         forHandle = _node2.project.creator.handle;
-        byHandle = _node2.author.handle;
+        byHandle = _node2.bouncer.handle;
         extra = 'projectId: "' + _node2.project.id + '"';
         type = 'BOUNCED';
         urlCode = '';
